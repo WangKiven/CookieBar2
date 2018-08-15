@@ -15,11 +15,12 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-final class Cookie extends LinearLayout implements View.OnTouchListener {
+final class Cookie extends FrameLayout implements View.OnTouchListener {
 
     private long slideOutAnimationDuration = 500;
     private Animation slideOutAnimation;
@@ -117,6 +118,8 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
         duration = params.duration;
         layoutGravity = params.layoutGravity;
 
+        float scale = getContext().getResources().getDisplayMetrics().density;
+
         //Icon
         if (params.iconResId != 0) {
             ivIcon.setVisibility(VISIBLE);
@@ -129,7 +132,10 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
         }
 
         //Title
+        int div = 0;
         if (!TextUtils.isEmpty(params.title)) {
+            div = (int) (8 * scale + 0.5f);
+
             tvTitle.setVisibility(VISIBLE);
             tvTitle.setText(params.title);
             if (params.titleColor != 0) {
@@ -139,6 +145,10 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
 
         //Message
         if (!TextUtils.isEmpty(params.message)) {
+            MarginLayoutParams layoutParams = (MarginLayoutParams) tvMessage.getLayoutParams();
+            layoutParams.topMargin = div;
+            tvMessage.setLayoutParams(layoutParams);
+
             tvMessage.setVisibility(VISIBLE);
             tvMessage.setText(params.message);
             if (params.messageColor != 0) {
@@ -170,8 +180,8 @@ final class Cookie extends LinearLayout implements View.OnTouchListener {
                     .setBackgroundColor(ContextCompat.getColor(getContext(), params.backgroundColor));
         }
 
+        int padding = getContext().getResources().getDimensionPixelSize(R.dimen.default_padding);
         if (layoutGravity == Gravity.BOTTOM) {
-            int padding = getContext().getResources().getDimensionPixelSize(R.dimen.default_padding);
             layoutCookie.setPadding(padding, padding, padding, padding);
         }
 

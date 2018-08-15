@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
                         .setMessage(R.string.top_cookie_message)
                         .setIcon(R.drawable.ic_android_white_48dp)
                         .setDuration(5000)
-                        .setAnimationOut(new int[]{R.anim.fade_out,R.anim.fade_out})
                         .show();
             }
         });
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 final ProgressBar progressBar = customView.findViewById(R.id.cookiebar_progressbar);
 
                 CookieBar.build(MainActivity.this)
-                        .setCustomView(R.layout.custom_cookie)
+                        .setCustomView(getLayoutInflater().inflate(R.layout.custom_cookie, null, false))
                         .setTitle(R.string.plain_cookie_title)
                         .setMessage(R.string.custom_view_cookie_message)
                         .setDuration(10000)
@@ -131,6 +130,20 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .show();
+            }
+        });
+
+        findViewById(R.id.btn_only_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CookieBar.build(MainActivity.this).setTitle(R.string.plain_cookie_title).show();
+            }
+        });
+
+        findViewById(R.id.btn_only_message).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CookieBar.build(MainActivity.this).setMessage(R.string.custom_view_cookie_message).show();
             }
         });
 
