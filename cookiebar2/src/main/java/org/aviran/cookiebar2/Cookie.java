@@ -3,7 +3,6 @@ package org.aviran.cookiebar2;
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,14 +15,13 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-final class Cookie extends FrameLayout implements View.OnTouchListener {
+final class Cookie extends LinearLayout implements View.OnTouchListener {
 
-    private long slideOutAnimationDuration = 300;
+    private long slideOutAnimationDuration = 500;
     private Animation slideOutAnimation;
 
     private ViewGroup layoutCookie;
@@ -32,16 +30,13 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
     private ImageView ivIcon;
     private TextView btnAction;
     private long duration = 2000;
-    private long animationDuration = 300;
     private int layoutGravity = Gravity.BOTTOM;
     private float initialDragX;
     private float dismissOffsetThreshold;
     private float viewWidth;
     private boolean swipedOut;
-    private int[] animationIn;
-    private int[] animationOut;
-    
-    
+
+
     public Cookie(@NonNull final Context context) {
         this(context, null);
     }
@@ -59,10 +54,12 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         return layoutGravity;
     }
 
-    private void initViews(@LayoutRes int rootView) {
+    private void initViews(View rootView) {
 
-        if (rootView != 0) {
-            inflate(getContext(), rootView, this);
+        if (rootView != null) {
+            addView(rootView, new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             inflate(getContext(), R.layout.layout_cookie, this);
         }
@@ -119,9 +116,6 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
 
         duration = params.duration;
         layoutGravity = params.layoutGravity;
-        animationDuration = params.animationDuration;
-        animationIn = params.animationIn;
-        animationOut = params.animationOut;
 
         //Icon
         if (params.iconResId != 0) {
@@ -176,8 +170,8 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                     .setBackgroundColor(ContextCompat.getColor(getContext(), params.backgroundColor));
         }
 
-        int padding = getContext().getResources().getDimensionPixelSize(R.dimen.default_padding);
         if (layoutGravity == Gravity.BOTTOM) {
+            int padding = getContext().getResources().getDimensionPixelSize(R.dimen.default_padding);
             layoutCookie.setPadding(padding, padding, padding, padding);
         }
 
@@ -198,11 +192,12 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
     }
 
     private void createInAnim() {
-        Animation slideInAnimation = AnimationUtils.loadAnimation(getContext(), (layoutGravity == Gravity.BOTTOM) ? animationIn[0] : animationIn[1]);
+        Animation slideInAnimation = AnimationUtils.loadAnimation(getContext(),
+                layoutGravity == Gravity.BOTTOM ? R.anim.slide_in_from_bottom : R.anim.slide_in_from_top);
         slideInAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                // no implementation
+
             }
 
             @Override
@@ -217,31 +212,31 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                // no implementation
+
             }
         });
-        slideInAnimation.setDuration(animationDuration);
+
         setAnimation(slideInAnimation);
     }
 
     private void createOutAnim() {
-        slideOutAnimation = AnimationUtils.loadAnimation(getContext(), layoutGravity == Gravity.BOTTOM ? animationOut[0] : animationOut[1]);
-        slideOutAnimation.setDuration(animationDuration);
+        slideOutAnimation = AnimationUtils.loadAnimation(getContext(),
+                layoutGravity == Gravity.BOTTOM ? R.anim.slide_out_to_bottom : R.anim.slide_out_to_top);
         slideOutAnimationDuration = slideOutAnimation.getDuration();
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                // no implementation
+
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                //
+
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                // no implementation
+
             }
         });
     }
@@ -259,7 +254,6 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(final Animation animation) {
-                // no implementation
             }
 
             @Override
@@ -267,13 +261,11 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                 if (listener != null) {
                     listener.onDismiss();
                 }
-                setVisibility(View.GONE);
                 removeFromParent();
             }
 
             @Override
             public void onAnimationRepeat(final Animation animation) {
-                // no implementation
             }
         });
 
@@ -345,7 +337,7 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         return new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                // no implementation
+
             }
 
             @Override
@@ -355,12 +347,12 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                // no implementation
+
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-                // no implementation
+
             }
         };
     }
