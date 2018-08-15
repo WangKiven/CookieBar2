@@ -16,11 +16,12 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-final class Cookie extends LinearLayout implements View.OnTouchListener {
+final class Cookie extends FrameLayout implements View.OnTouchListener {
 
     private long slideOutAnimationDuration = 300;
     private Animation slideOutAnimation;
