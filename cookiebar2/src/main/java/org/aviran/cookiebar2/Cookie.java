@@ -328,6 +328,7 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                     if (Math.sqrt(xy2) < getContext().getResources().getDisplayMetrics().density * 4) {
                         // 单击，退出
                         dismiss();
+                        swipedOut = true;// 防止重复点击
                     } else {
                         // 回到原位置
                         view.animate()
