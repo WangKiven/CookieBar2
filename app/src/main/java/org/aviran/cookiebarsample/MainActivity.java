@@ -110,12 +110,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final View customView =
+                /*final View customView =
                         LayoutInflater.
                         from(MainActivity.this).
                         inflate(R.layout.custom_cookie, null);
 
-                final ProgressBar progressBar = customView.findViewById(R.id.cookiebar_progressbar);
+                final ProgressBar progressBar = customView.findViewById(R.id.cookiebar_progressbar);*/
 
                 CookieBar.build(MainActivity.this)
                         .setCustomView(getLayoutInflater().inflate(R.layout.custom_cookie, null, false))
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Hide Progress bar", new OnActionClickListener() {
                             @Override
                             public void onClick() {
-                                progressBar.setVisibility(View.GONE);
+                                /*progressBar.setVisibility(View.GONE);*/
                             }
                         })
                         .show();

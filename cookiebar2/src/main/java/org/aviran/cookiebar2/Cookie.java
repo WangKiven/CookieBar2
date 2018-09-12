@@ -17,7 +17,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 final class Cookie extends FrameLayout implements View.OnTouchListener {
@@ -33,8 +32,11 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
     private long duration = 2000;
     private int layoutGravity = Gravity.BOTTOM;
     private float initialDragX;
-    private float dismissOffsetThreshold;
+    private float initialDragY;
+    private float dismissOffsetThresholdH;
+    private float dismissOffsetThresholdV;
     private float viewWidth;
+    private float viewHeight;
     private boolean swipedOut;
 
 
@@ -192,7 +194,9 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         viewWidth = getWidth();
-        dismissOffsetThreshold = viewWidth / 3;
+        viewHeight = layoutCookie.getMeasuredHeight();
+        dismissOffsetThresholdH = viewWidth / 3;
+        dismissOffsetThresholdV = viewHeight / 2.5f;
 
         if (layoutGravity == Gravity.TOP) {
             super.onLayout(changed, l, 0, r, layoutCookie.getMeasuredHeight());
@@ -302,15 +306,37 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 initialDragX = motionEvent.getRawX();
+                initialDragY = motionEvent.getRawY();
                 return true;
 
             case MotionEvent.ACTION_UP:
                 if (!swipedOut) {
-                    view.animate()
+
+                    // 原代码：手指松开，回到原位
+                    /*view.animate()
                             .x(0)
+                            .y(0)
                             .alpha(1)
                             .setDuration(200)
-                            .start();
+                            .start();*/
+
+                    // 新增代码：判断单击，关闭
+                    float offsetX = motionEvent.getRawX() - initialDragX;
+                    float offsetY = motionEvent.getRawY() - initialDragY;
+                    float xy2 = offsetX * offsetX + offsetY * offsetY;
+
+                    if (Math.sqrt(xy2) < getContext().getResources().getDisplayMetrics().density * 4) {
+                        // 单击，退出
+                        dismiss();
+                    } else {
+                        // 回到原位置
+                        view.animate()
+                                .x(0)
+                                .y(layoutGravity == Gravity.TOP ? 0:(getHeight() - viewHeight))
+                                .alpha(1)
+                                .setDuration(200)
+                                .start();
+                    }
                 }
                 return true;
 
@@ -318,7 +344,9 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                 if (swipedOut) {
                     return true;
                 }
-                float offset = motionEvent.getRawX() - initialDragX;
+
+                // 原代码：这段代码仅支持左右滑动
+                /*float offset = motionEvent.getRawX() - initialDragX;
                 float alpha = 1 - Math.abs(offset / viewWidth);
                 long duration = 0;
 
@@ -332,6 +360,42 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                 view.animate()
                         .setListener(swipedOut ? getDestroyListener() : null)
                         .x(offset)
+                        .alpha(alpha)
+                        .setDuration(duration)
+                        .start();*/
+
+                // 新增代码：以下代码支持左右滑动 和 位置方向滑动（在顶部，向上滑动。在底部，可向下滑动）来关闭
+
+                float offsetX = motionEvent.getRawX() - initialDragX;
+                float offsetY = motionEvent.getRawY() - initialDragY;
+                float alpha = 1 - Math.abs(offsetX / viewWidth);
+                long duration = 0;
+
+                if (Math.abs(offsetX) > dismissOffsetThresholdH) {
+                    offsetX = viewWidth * Math.signum(offsetX);
+                    alpha = 0;
+                    duration = 200;
+                    swipedOut = true;
+                }
+
+                // 显示在顶部的不能下移，显示在底部的不能上移
+                offsetY = layoutGravity == Gravity.TOP ? Math.min(offsetY, 0) : Math.max(offsetY, 0);
+                if (Math.abs(offsetY) > dismissOffsetThresholdV) {
+                    if (layoutGravity == Gravity.TOP)
+                        offsetY = viewHeight * -1;
+                    else
+                        offsetY = getHeight();
+                    duration = 150;
+                    swipedOut = true;
+                } else {
+                    if (layoutGravity != Gravity.TOP)
+                        offsetY = offsetY + (getHeight() - viewHeight);
+                }
+
+                view.animate()
+                        .setListener(swipedOut ? getDestroyListener() : null)
+                        .x(offsetX)
+                        .y(offsetY)
                         .alpha(alpha)
                         .setDuration(duration)
                         .start();
