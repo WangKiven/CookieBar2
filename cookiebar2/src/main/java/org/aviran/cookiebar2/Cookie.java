@@ -259,11 +259,17 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         dismiss(null);
     }
 
+    private boolean isDissing = false;
     public void dismiss(final CookieBarDismissListener listener) {
         if (swipedOut) {
             removeFromParent();
             return;
         }
+
+        if (isDissing) {
+            return;
+        }
+        isDissing = true;
 
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -276,6 +282,8 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                     listener.onDismiss();
                 }
                 removeFromParent();
+
+                isDissing = false;
             }
 
             @Override

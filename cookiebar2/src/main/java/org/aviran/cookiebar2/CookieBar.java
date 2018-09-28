@@ -92,10 +92,10 @@ public class CookieBar {
                 ((Cookie) child).dismiss(new Cookie.CookieBarDismissListener() {
                     @Override
                     public void onDismiss() {
-                        parent.addView(cookie);
+//                        parent.addView(cookie);
                     }
                 });
-                return;
+//                return;
             }
         }
 
