@@ -259,14 +259,15 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         dismiss(null);
     }
 
-    private boolean isDissing = false;
+    private boolean isDissing = false;// 是否正在退出界面
+
     public void dismiss(final CookieBarDismissListener listener) {
         if (swipedOut) {
             removeFromParent();
             return;
         }
 
-        if (isDissing) {
+        if (isDissing) {// 如果正在关闭，就不继续了
             return;
         }
         isDissing = true;
@@ -341,7 +342,7 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
                         // 回到原位置
                         view.animate()
                                 .x(0)
-                                .y(layoutGravity == Gravity.TOP ? 0:(getHeight() - viewHeight))
+                                .y(layoutGravity == Gravity.TOP ? 0 : (getHeight() - viewHeight))
                                 .alpha(1)
                                 .setDuration(200)
                                 .start();
