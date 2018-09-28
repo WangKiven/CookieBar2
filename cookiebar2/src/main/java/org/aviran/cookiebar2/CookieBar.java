@@ -14,14 +14,13 @@ import android.view.ViewGroup;
 /**
  * CookieBar is a lightweight library for showing a brief message at the top or bottom of the
  * screen.
- *
+ * <p>
  * CookieBar
- *      .build(MainActivity.this)
- *      .setTitle("TITLE")
- *      .setMessage("MESSAGE")
- *      .setAction("ACTION", new OnActionClickListener() {})
- *      .show();
- *
+ * .build(MainActivity.this)
+ * .setTitle("TITLE")
+ * .setMessage("MESSAGE")
+ * .setAction("ACTION", new OnActionClickListener() {})
+ * .show();
  */
 public class CookieBar {
     private Cookie cookieView;
@@ -37,7 +36,7 @@ public class CookieBar {
 
     private CookieBar(Activity context, Params params) {
         this.context = context;
-        if(params == null) {
+        if (params == null) {
             // since params is null, this CookieBar object can only be used to dismiss
             // existing cookies
             dismiss();
@@ -69,10 +68,10 @@ public class CookieBar {
     }
 
     private void removeFromParent(ViewGroup parent) {
-        int childCount = parent .getChildCount();
+        int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
-            if(child instanceof Cookie) {
+            if (child instanceof Cookie) {
                 ((Cookie) child).dismiss();
                 return;
             }
@@ -81,15 +80,15 @@ public class CookieBar {
     }
 
     private void addCookie(final ViewGroup parent, final Cookie cookie) {
-        if(cookie.getParent() != null) {
+        if (cookie.getParent() != null) {
             return;
         }
 
         // if exists, remove existing cookie
-        int childCount = parent .getChildCount();
+        int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
-            if(child instanceof Cookie) {
+            if (child instanceof Cookie) {
                 ((Cookie) child).dismiss(new Cookie.CookieBarDismissListener() {
                     @Override
                     public void onDismiss() {
