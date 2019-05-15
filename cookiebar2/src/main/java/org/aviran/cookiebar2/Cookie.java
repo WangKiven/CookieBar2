@@ -237,6 +237,8 @@ final class Cookie extends FrameLayout implements View.OnTouchListener {
         slideOutAnimation = AnimationUtils.loadAnimation(getContext(),
                 layoutGravity == Gravity.BOTTOM ? R.anim.slide_out_to_bottom : R.anim.slide_out_to_top);
         slideOutAnimationDuration = slideOutAnimation.getDuration();
+        slideOutAnimation.setFillAfter(true);
+        slideOutAnimation.setFillBefore(false);
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
